@@ -198,7 +198,7 @@ class CustomCFGDenoiser(sd_samplers_kdiffusion.CFGDenoiser):
         actualMax = torch.maximum(cfg_max, mim_max)
 
         ### Clamp to the max
-        cfg_clamped = cfg_centered.clamp(torch.full_like(cfg_centered, -actualMax.item()), torch.full_like(cfg_centered, actualMax.item()))
+        cfg_clamped = cfg_centered.clamp((-actualMax).expand_as(cfg_centered), actualMax.expand_as(cfg_centered))
         
         ### Now shrink from the max to normalize and grow to the mimic scale (instead of the CFG scale)
         cfg_renormalized = (cfg_clamped / actualMax) * mim_max
